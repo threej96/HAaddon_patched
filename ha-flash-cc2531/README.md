@@ -33,5 +33,5 @@ cc디버거 없이 라즈베리파이를 이용한 cc2531 기기의 플래싱 �
 |4 (DD)|38 (GPIO28, BCM20)|
 |7 (reset)|35 (GPIO24, BCM19)|
 
-![cc2531 점프선 연결화면](https://github.com/kimtc99/HAaddon/blob/master/img/cc2531-1.png)
-![cc2531과 RaspberryPi 연결화면](https://github.com/kimtc99/HAaddon/blob/master/img/cc2531-2.png)
+![cc2531 점프선 연결화면](https://github.com/kimtc99/HAaddon/blob/master/img/cc2531-1.jpg)
+![cc2531과 RaspberryPi 연결화면](https://github.com/kimtc99/HAaddon/blob/master/img/cc2531-2.jpg)
