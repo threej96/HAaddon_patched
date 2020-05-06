@@ -1,5 +1,6 @@
 # HA flash addon for cc2531
-cc디버거 없이 라즈베리파이를 이용한 cc2531 기기의 플래싱 애드온
+cc디버거 없이 라즈베리파이를 이용한 cc2531 기기의 플래싱 애드온.
+
 코디네이터 혹은 라우터 선택이 가능합니다. (설정화면 참고)
 
 ## 설치 방법
@@ -23,6 +24,7 @@ cc디버거 없이 라즈베리파이를 이용한 cc2531 기기의 플래싱 �
 * 0: standard firmware
 * 1: standard firmware + diagnostic messages
 * 2: standard firmware + diagnostic messages + USB support
+
 (자세한 설명은 https://github.com/Koenkk/Z-Stack-firmware 에서 확인하세요.)
 
 ## 연결 방법
