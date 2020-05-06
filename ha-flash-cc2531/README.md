@@ -37,3 +37,6 @@ cc디버거 없이 라즈베리파이를 이용한 cc2531 기기의 플래싱 �
 
 ![cc2531 점프선 연결화면](https://github.com/kimtc99/HAaddon/blob/master/img/cc2531-1.jpg)
 ![cc2531과 RaspberryPi 연결화면](https://github.com/kimtc99/HAaddon/blob/master/img/cc2531-2.jpg)
+
+## 결과 확인
+log에 "flash OK." 가 나올 때까지 기다립니다.
