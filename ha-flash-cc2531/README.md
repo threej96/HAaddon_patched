@@ -5,7 +5,7 @@ cc디버거 없이 라즈베리파이를 이용한 cc2531 기기의 플래싱 �
 
 ## 설치 방법
 1. Supervisor -> ADD-ON STORE 이동
-2. "https://github.com/kimtc99/HAaddon" 를 Repositories 에 추가하고 새로 고침을 합니다.
+2. " https://github.com/kimtc99/HAaddon " 를 Repositories 에 추가하고 새로 고침을 합니다.
 3. Saram's Repository 항목으로 이동하여 "CC2531 flash addon for HA with RaspberryPi"를 선택하고 INSTALL을 눌러 설치합니다.
 
 ## 설정 화면

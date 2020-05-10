@@ -21,7 +21,7 @@ Python으로 제작한 elfin 기기와 mqtt 통신을 통한 코맥스 월패드
 설치 방법
 -------
 1. Supervisor -> ADD-ON STORE 이동
-2. "https://github.com/kimtc99/HAaddon" 를 Repositories 에 추가하고 새로 고침을 합니다.
+2. " https://github.com/kimtc99/HAaddon " 를 Repositories 에 추가하고 새로 고침을 합니다.
 3. Saram's Repository 항목으로 이동하여 "MQTT2elfin COMMAX Wallpad Controller with Python"를 선택하고 INSTALL을 눌러 설치합니다.
 
 설정 화면
