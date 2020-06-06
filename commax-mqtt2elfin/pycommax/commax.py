@@ -56,6 +56,7 @@ def find_device(config):
     mqtt_client.loop_stop()
 
     collect_data = list(set(collect_data))
+    log('Collected signals: {}'.format(collect_data))
     with open(data_dir + '/commax_devinfo.json') as file:
         dev_info = json.load(file)
 
@@ -238,12 +239,15 @@ def do_work(config, device_list):
                             QUEUE.append({'sendcmd': sendcmd, 'recvcmd': recvcmd, 'count': 0})
                             if debug:
                                 log('[DEBUG] Queued ::: sendcmd: {}, recvcmd: {}'.format(sendcmd, recvcmd))
+                        else:
+                            if debug:
+                                log('[DEBUG] There is no command for {}'.format('/'.join(topics)))
                 else:
                     if debug:
                         log('[DEBUG] {} is already set: {}'.format(key, value))
             else:
                 if debug:
-                    log('[DEBUG] There is no commands for {}'.format('/'.join(topics)))
+                    log('[DEBUG] There is no command for {}'.format('/'.join(topics)))
         except Exception as err:
             log('[ERROR] mqtt_on_message(): {}'.format(err))
 
@@ -398,6 +402,16 @@ def do_work(config, device_list):
                 log('[LOG] MQTT >> HA : {} -> {}'.format(topic, val))
         except:
             pass
+
+    # async def update_ev_value(val):
+    #     deviceID = 'EV' + str(idx + 1)
+    #     try:
+    #         topic = STATE_TOPIC.format(deviceID, 'floor')
+    #         mqtt_client.publish(topic, val.encode())
+    #         if debug:
+    #             log('[LOG] MQTT >> HA : {} -> {}'.format(topic, val))
+    #     except:
+    #         pass
 
     def on_connect(client, userdata, flags, rc):
         if rc == 0:

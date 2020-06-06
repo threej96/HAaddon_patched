@@ -46,6 +46,9 @@
   },
   "Outlet": {
     "Number": 2,
+    "commandOFF": "7A0101000000007C",
+    "commandON": "7A0101010000007D",
+    "commandNUM": 4,
 
     "statePREFIX": "79",
     "stateOFF": "F90001110000000B",
@@ -65,8 +68,9 @@
   },
   "EV": {
     "Number": 1,
-    "commandON": "220140070000006A",
+    "commandON": "A0010100081500BF",
 
-    "statePREFIX": "23"
+    "statePREFIX": "23",
+    "BasementFloor": 2
   }
 }
