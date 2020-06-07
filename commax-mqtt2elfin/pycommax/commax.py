@@ -307,6 +307,8 @@ def do_work(config, device_list):
                                         OutBreak = True
                                         if onoff == 'ON':
                                             await update_outlet_value(index, data[10:14])
+                                        else:
+                                            await update_outlet_value(index, 0)
                                 if OutBreak:
                                     break
 
@@ -419,9 +421,6 @@ def do_work(config, device_list):
             client.subscribe([(HA_TOPIC + '/#', 0), (ELFIN_TOPIC + '/recv', 0), (ELFIN_TOPIC + '/send', 1)])
             if 'EV' in DEVICE_LISTS:
                 asyncio.run(update_state('EV', 0, 'OFF'))
-            if 'Outlet' in DEVICE_LISTS:
-                for index in range(DEVICE_LISTS['Outlet']['Num']):
-                    asyncio.run(update_outlet_value(index, '0'))
         else:
             errcode = {1: 'Connection refused - incorrect protocol version',
                        2: 'Connection refused - invalid client identifier',
