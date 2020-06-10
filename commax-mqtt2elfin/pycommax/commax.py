@@ -173,7 +173,7 @@ def do_work(config, device_list):
     log('----------------------')
     for name in DEVICE_LISTS:
         device_info = DEVICE_LISTS[name]
-        prefix_list[device_info[1]['stateOFF'][:2]] = name
+        prefix_list[device_info[1]['stateON'][:2]] = name
         log('{}: {}'.format(name, device_info))
     log('----------------------')
 
