@@ -504,7 +504,7 @@ if __name__ == '__main__':
             log('Found device data: /share/commax_found_device.json')
             OPTION = json.load(file)
     except IOError:
-        log('Could not found saved data: /share/commax_found_device.json')
+        log('Could not find saved data: /share/commax_found_device.json')
         OPTION = find_device(CONFIG)
     while True:
         do_work(CONFIG, OPTION)
