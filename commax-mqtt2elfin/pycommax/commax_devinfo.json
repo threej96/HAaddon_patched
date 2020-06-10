@@ -5,7 +5,6 @@
     "commandON": "3101010000000033",
     "commandNUM": 4,
 
-    "statePREFIX": "30",
     "stateOFF": "B0000100000000B1",
     "stateON": "B0010100000000B2",
     "stateNUM": 6
@@ -21,7 +20,6 @@
     "setTemp": 9,
     "chaTemp": 7,
 
-    "statePREFIX": "02",
     "stateOFF": "8280012322000048",
     "stateON": "8281012322000049",
     "stateNUM": 6,
@@ -32,7 +30,6 @@
     "commandOFF": "2201000100000024",
     "commandON": "2201010100000025",
 
-    "statePREFIX": "20",
     "stateOFF": "A0000100001500B6",
     "stateON": "A0010100001500B7"
   },
@@ -40,7 +37,6 @@
     "Number": 1,
     "commandOFF": "1101800000000092",
 
-    "statePREFIX": "10",
     "stateOFF": "9050500000000030",
     "stateON": "90A0A000000000D0"
   },
@@ -50,7 +46,6 @@
     "commandON": "7A0101010000007D",
     "commandNUM": 4,
 
-    "statePREFIX": "79",
     "stateOFF": "F90001110000000B",
     "stateON": "F90101110000000C",
     "stateNUM": 6
@@ -62,7 +57,6 @@
     "commandCHANGE": "780102010000007C",
     "speedNUM": 8,
 
-    "statePREFIX": "76",
     "stateOFF": "F6000100000000F7",
     "stateON": "F6040101000000FC"
   },
@@ -70,7 +64,7 @@
     "Number": 1,
     "commandON": "A0010100081500BF",
 
-    "statePREFIX": "23",
+    "stateON": "2301000000000024",
     "BasementFloor": 2
   }
 }
