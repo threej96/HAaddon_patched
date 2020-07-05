@@ -172,20 +172,23 @@ def do_work(config, device_list):
     log('Registered DEVICE_LISTS..')
     log('----------------------')
     for name in DEVICE_LISTS:
-        device_info = DEVICE_LISTS[name]
-        if device_info[1].get('stateON'):
-            prefix_list[device_info[1]['stateON'][:2]] = name
-        log('{}: {}'.format(name, device_info))
+        state = DEVICE_LISTS[name][1].get('stateON')
+        if state:
+            prefix = state[0][:2] if isinstance(state, list) else state[:2]
+            prefix_list[prefix] = name
+        log('{}: {}'.format(name, DEVICE_LISTS[name]))
     log('----------------------')
 
     HOMESTATE = {}
     QUEUE = []
-    COLLECTDATA = {'cond': find_signal, 'data': [], 'EVtime': time.time(), 'LastRecv': time.time_ns()}
+    COLLECTDATA = {'cond': find_signal, 'data': set(), 'EVtime': time.time(), 'LastRecv': time.time_ns()}
+    if find_signal:
+        log('[LOG] Collect 50 signals..')
 
     async def recv_from_HA(topics, value):
         device = topics[1][:-1]
         if mqtt_log:
-            log('[LOG] HA >> MQTT : {} -> {}'.format('/'.join(topics), value))
+            log('[LOG] HA ->> : {} -> {}'.format('/'.join(topics), value))
 
         if device in DEVICE_LISTS:
             key = topics[1] + topics[2]
@@ -259,6 +262,16 @@ def do_work(config, device_list):
     async def slice_raw_data(raw_data):
         if elfin_log:
             log('[SIGNAL] receved: {}'.format(raw_data))
+        if COLLECTDATA['cond']:
+            if len(COLLECTDATA['data']) < 50:
+                if data not in COLLECTDATA['data']:
+                    COLLECTDATA['data'].add(data)
+            else:
+                COLLECTDATA['cond'] = False
+                with open(share_dir + '/collected_signal.txt', 'w', encoding='utf-8') as make_file:
+                    json.dump(COLLECTDATA['data'], make_file, indent="\t")
+                    log('[Complete] Collect 50 signals. See : /share/collected_signal.txt')
+                COLLECTDATA['data'] = None
 
         cors = [recv_from_elfin(raw_data[k:k + 16]) for k in range(0, len(raw_data), 16) if raw_data[k:k + 16] == checksum(raw_data[k:k + 16])]
         await asyncio.gather(*cors)
@@ -269,7 +282,6 @@ def do_work(config, device_list):
             if HOMESTATE.get('EV1power') == 'ON':
                 if COLLECTDATA['EVtime'] < time.time():
                     await update_state('EV', 0, 'OFF')
-            # 수정 필요
             for que in QUEUE:
                 if data in que['recvcmd']:
                     QUEUE.remove(que)
@@ -277,34 +289,7 @@ def do_work(config, device_list):
                         log('[DEBUG] Found matched hex: {}. Delete a queue: {}'.format(raw_data, que))
                     break
 
-            # OutBreak = False
-            # for que in QUEUE:
-            #     for recvcmd in que['recvcmd']:
-            #         if recvcmd in data:
-            #             QUEUE.remove(que)
-            #             if debug:
-            #                 log('[DEBUG] Found matched hex: {}. Delete a queue: {}'.format(raw_data, que))
-            #             OutBreak = True
-            #             break
-            #     if OutBreak:
-            #         break
-
-            # 수정필요
-            # if COLLECTDATA['cond']:
-            #     if len(COLLECTDATA['data']) < 100:
-            #         if data not in COLLECTDATA['data']:
-            #             log('[FOUND] signal: {}'.format(data))
-            #             COLLECTDATA['data'].append(data)
-            #             COLLECTDATA['data'] = list(set(COLLECTDATA['data']))
-            #     else:
-            #         COLLECTDATA['cond'] = False
-            #         with open(share_dir + '/collected_signal.txt', 'w', encoding='utf-8') as make_file:
-            #             json.dump(COLLECTDATA['data'], make_file, indent="\t")
-            #             log('[Complete] Collect 20 signals. See : /share/collected_signal.txt')
-            #         COLLECTDATA['data'] = None
-
             device_name = prefix_list.get(data[:2])
-
             if device_name == 'Thermo':
                 curTnum = device_list['Thermo']['curTemp']
                 setTnum = device_list['Thermo']['setTemp']
@@ -324,8 +309,8 @@ def do_work(config, device_list):
                 elif data == DEVICE_LISTS['Fan'][1]['stateOFF']:
                     await update_state('Fan', 0, 'OFF')
                 else:
-                    log('[WARNING] We found <{}> signal: {}'.format(device_name, data))
-                    log('[WARNING] But there is no packet in DEVICE_LIST. Check you JSON file.')
+                    log("[WARNING] We found <{}>'s signal: {}".format(device_name, data))
+                    log('[WARNING] But there is no packet in DEVICE_LIST. Check your JSON file.')
             elif device_name == 'Outlet':
                 staNUM = device_list['Outlet']['stateNUM']
                 index = int(data[staNUM - 1]) - 1
@@ -351,8 +336,8 @@ def do_work(config, device_list):
                     onoff, index = ['OFF', index] if index < num else ['ON', index - num]
                     await update_state(device_name, index, onoff)
                 else:
-                    log('We found <{}> signal: {}'.format(device_name, data))
-                    log('But there is no packet in DEVICE_LIST. Check you JSON file.')
+                    log("[WARNING] We found <{}>'s signal: {}".format(device_name, data))
+                    log('[WARNING] But there is no packet in DEVICE_LIST. Check your JSON file.')
 
     async def update_state(device, idx, onoff):
         state = 'power'
@@ -364,7 +349,7 @@ def do_work(config, device_list):
             topic = STATE_TOPIC.format(deviceID, state)
             mqtt_client.publish(topic, onoff.encode())
             if mqtt_log:
-                log('[LOG] MQTT >> HA : {} >> {}'.format(topic, onoff))
+                log('[LOG] ->> HA : {} >> {}'.format(topic, onoff))
         else:
             if debug:
                 log('[DEBUG] {} is already set: {}'.format(deviceID, onoff))
@@ -389,7 +374,7 @@ def do_work(config, device_list):
             topic = STATE_TOPIC.format(deviceID, state)
             mqtt_client.publish(topic, onoff.encode())
             if mqtt_log:
-                log('[LOG] MQTT >> HA : {} >> {}'.format(topic, onoff))
+                log('[LOG] ->> HA : {} >> {}'.format(topic, onoff))
         else:
             if debug:
                 log('[DEBUG] {} is already set: {}'.format(deviceID, onoff))
@@ -406,7 +391,7 @@ def do_work(config, device_list):
                 topic = STATE_TOPIC.format(deviceID, state)
                 mqtt_client.publish(topic, val.encode())
                 if mqtt_log:
-                    log('[LOG] MQTT >> HA : {} -> {}'.format(topic, val))
+                    log('[LOG] ->> HA : {} -> {}'.format(topic, val))
             else:
                 if debug:
                     log('[DEBUG] {} is already set: {}'.format(key, val))
@@ -419,7 +404,7 @@ def do_work(config, device_list):
             topic = STATE_TOPIC.format(deviceID, 'watt')
             mqtt_client.publish(topic, val.encode())
             if debug:
-                log('[LOG] MQTT >> HA : {} -> {}'.format(topic, val))
+                log('[LOG] ->> HA : {} -> {}'.format(topic, val))
         except:
             pass
 
@@ -431,7 +416,7 @@ def do_work(config, device_list):
             topic = STATE_TOPIC.format(deviceID, 'floor')
             mqtt_client.publish(topic, val.encode())
             if debug:
-                log('[LOG] MQTT >> HA : {} -> {}'.format(topic, val))
+                log('[LOG] ->> HA : {} -> {}'.format(topic, val))
         except:
             pass
 
