@@ -64,7 +64,7 @@ def find_device(config):
                 name = statePrefix[data[:2]]
                 collect_data[name].add(data)
                 if dev_info[name].get('stateNUM'):
-                    device_num[name] = max([device_num[name], int(data[int(dev_info[name]['stateNUM'])-1])])
+                    device_num[name] = max([device_num[name], int(data[int(dev_info[name]['stateNUM']) - 1])])
                 else:
                     device_num[name] = 1
 
@@ -96,6 +96,7 @@ def find_device(config):
         json.dump(dev_info, make_file, indent="\t")
         log('Writing device_list to : /share/commax_found_device.json')
     return dev_info
+
 
 def do_work(config, device_list):
     debug = config['DEBUG']
@@ -262,16 +263,16 @@ def do_work(config, device_list):
     async def slice_raw_data(raw_data):
         if elfin_log:
             log('[SIGNAL] receved: {}'.format(raw_data))
-        if COLLECTDATA['cond']:
-            if len(COLLECTDATA['data']) < 50:
-                if data not in COLLECTDATA['data']:
-                    COLLECTDATA['data'].add(data)
-            else:
-                COLLECTDATA['cond'] = False
-                with open(share_dir + '/collected_signal.txt', 'w', encoding='utf-8') as make_file:
-                    json.dump(COLLECTDATA['data'], make_file, indent="\t")
-                    log('[Complete] Collect 50 signals. See : /share/collected_signal.txt')
-                COLLECTDATA['data'] = None
+        # if COLLECTDATA['cond']:
+        #     if len(COLLECTDATA['data']) < 50:
+        #         if data not in COLLECTDATA['data']:
+        #             COLLECTDATA['data'].add(data)
+        #     else:
+        #         COLLECTDATA['cond'] = False
+        #         with open(share_dir + '/collected_signal.txt', 'w', encoding='utf-8') as make_file:
+        #             json.dump(COLLECTDATA['data'], make_file, indent="\t")
+        #             log('[Complete] Collect 50 signals. See : /share/collected_signal.txt')
+        #         COLLECTDATA['data'] = None
 
         cors = [recv_from_elfin(raw_data[k:k + 16]) for k in range(0, len(raw_data), 16) if raw_data[k:k + 16] == checksum(raw_data[k:k + 16])]
         await asyncio.gather(*cors)
@@ -455,7 +456,7 @@ def do_work(config, device_list):
     async def send_to_elfin():
         while True:
             try:
-                if time.time_ns() - COLLECTDATA['LastRecv'] > 10000000000: #10s
+                if time.time_ns() - COLLECTDATA['LastRecv'] > 10000000000:  # 10s
                     log('[WARNING] There is no signal from elfin! Check the devices.')
                     COLLECTDATA['LastRecv'] = time.time_ns()
                 elif time.time_ns() - COLLECTDATA['LastRecv'] > 100000000:
