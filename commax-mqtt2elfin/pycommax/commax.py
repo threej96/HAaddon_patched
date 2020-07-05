@@ -145,7 +145,7 @@ def do_work(config, device_list):
                 return None
 
     def make_device_info(dev_name, device):
-        num = device.get('Number') if device.get('Number') else 0
+        num = device.get('Number', 0)
         if num > 0:
             arr = {k + 1: {cmd + onoff: make_hex(k, device.get(cmd + onoff), device.get(cmd + 'NUM'))
                            for cmd in ['command', 'state'] for onoff in ['ON', 'OFF']} for k in range(num)}
