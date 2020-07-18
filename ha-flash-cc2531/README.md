@@ -24,6 +24,9 @@ cc디버거 없이 라즈베리파이를 이용한 cc2531 기기의 플래싱 �
 * 0: standard firmware
 * 1: standard firmware + diagnostic messages
 * 2: standard firmware + diagnostic messages + USB support
+#### flags : 문자
+명령어 뒤에 추가할 옵션을 적습니다. 추가한 옵션은 플래싱과 관련한 모든 명령(cc_chipid, cc_erase, cc_write) 뒤에 추가됩니다.
+예로 ffff 에러의 경우 flags에 "-m 300"을 적어주면 됩니다.(참고: https://cafe.naver.com/koreassistant/2125 )
 
 (자세한 설명은 https://github.com/Koenkk/Z-Stack-firmware 에서 확인하세요.)
 
