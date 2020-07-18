@@ -12,7 +12,8 @@ cc디버거 없이 라즈베리파이를 이용한 cc2531 기기의 플래싱 �
 <pre><code>
 "coordinator": true,
 "zigbee3": true,
-"router_level": 0
+"router_level": 0,
+"flags": ""
 </code></pre>
 
 #### coordinator : true / false
