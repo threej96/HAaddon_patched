@@ -38,8 +38,8 @@ if [ "$IS_COORDINATOR" == "true" ]; then
 else
   echo "Select router firmware.."
   echo "Download and Extract a firmware.."
-  wget https://github.com/Koenkk/Z-Stack-firmware/raw/master/router/CC2531/bin/CC2531_router_2019_02.zip
-  unzip CC2531_router_2019_02.zip
+  wget https://github.com/Koenkk/Z-Stack-firmware/raw/master/router/CC2531/bin/CC2531_router_2020_09_29.zip
+  unzip CC2531_router_2020_09_29.zip
   case $ROUTER_LEVEL in
     0)
       echo "ROUTER: standard firmware"
