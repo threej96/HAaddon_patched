@@ -43,4 +43,4 @@ cc디버거 없이 라즈베리파이를 이용한 cc2531 기기의 플래싱 �
 ![cc2531과 RaspberryPi 연결화면](https://github.com/kimtc99/HAaddon/blob/master/img/cc2531-2.jpg)
 
 ## 결과 확인
-log에 "flash OK." 가 나올 때까지 기다립니다.
+wiring page 관련 문구가 나오고 애드온이 종료되면 플래싱이 완료됩니다.
