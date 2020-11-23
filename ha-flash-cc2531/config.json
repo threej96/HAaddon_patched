@@ -1,6 +1,6 @@
 {
   "name": "CC2531 flash addon for HA with RaspberryPi",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "slug": "ha_flash_cc2531",
   "url": "https://github.com/kimtc99/HAaddon",
   "description": "cc2531 플래싱 애드온",
