@@ -13,6 +13,7 @@ cd /flash_cc2531
 ChipID="$(./cc_chipid $FLAGS)"
 echo $ChipID
 grepID=$(echo $ChipID | grep "ID = b524")
+
 if [ -z "$grepID" ]; then echo "[ERROR] ChipID mismatch. Check the gpio wiring or flag options." && exit 1; fi
 
 if [ "$IS_COORDINATOR" == "true" ]; then
@@ -24,7 +25,7 @@ if [ "$IS_COORDINATOR" == "true" ]; then
     if [ ! -f CC2531ZNP-with-SBL.hex ]; then echo "[ERROR] Fail to download or extract. There is no hex file." && exit 1; fi
     echo "Found CC2531ZNP-with-SBL.hex. Flash firmware.."
     ./cc_erase $FLAGS
-    ./cc_write $FLAGS CC2531ZNP-with-SBL.hex
+    [ -z "$FLAGS" ] && ./cc_write CC2531ZNP-with-SBL.hex || ./cc_write $FLAGS CC2531ZNP-with-SBL.hex
   else
     echo "Select coordinator firmware for ver 1.2"
     echo "Download and Extract a firmware.."
@@ -33,7 +34,7 @@ if [ "$IS_COORDINATOR" == "true" ]; then
     if [ ! -f CC2531ZNP-Prod.hex ]; then echo "[ERROR] Fail to download or extract. There is no hex file." && exit 1; fi
     echo "Found CC2531ZNP-Prod.hex. Flash firmware.."
     ./cc_erase $FLAGS
-    ./cc_write $FLAGS CC2531ZNP-Prod.hex
+    [ -z "$FLAGS" ] && ./cc_write CC2531ZNP-Prod.hex || ./cc_write $FLAGS CC2531ZNP-Prod.hex
   fi
 else
   echo "Select router firmware.."
@@ -46,21 +47,21 @@ else
       if [ ! -f router-cc2531-std.hex ]; then echo "[ERROR] Fail to download or extract. There is no hex file." && exit 1; fi
       echo "Found router-cc2531-std.hex. Flash firmware.."
       ./cc_erase $FLAGS
-      ./cc_write $FLAGS router-cc2531-std.hex
+      [ -z "$FLAGS" ] && ./cc_write router-cc2531-std.hex || ./cc_write $FLAGS router-cc2531-std.hex
       ;;
     1)
       echo "ROUTER: firmware with additional diagnostic messages"
       if [ ! -f router-cc2531-diag.hex ]; then echo "[ERROR] Fail to download or extract. There is no hex file." && exit 1; fi
       echo "Found router-cc2531-diag.hex. Flash firmware.."
       ./cc_erase $FLAGS
-      ./cc_write $FLAGS router-cc2531-diag.hex
+      [ -z "$FLAGS" ] && ./cc_write router-cc2531-diag.hex || ./cc_write $FLAGS router-cc2531-diag.hex
       ;;
     2)
       echo "ROUTER: firmware with additional diagnostic messages and USB support"
       if [ ! -f router-cc2531-diag-usb.hex ]; then echo "[ERROR] Fail to download or extract. There is no hex file." && exit 1; fi
       echo "Found router-cc2531-diag-usb.hex. Flash firmware.."
       ./cc_erase $FLAGS
-      ./cc_write $FLAGS router-cc2531-diag-usb.hex
+      [ -z "$FLAGS" ] && ./cc_write router-cc2531-diag-usb.hex || ./cc_write $FLAGS router-cc2531-diag-usb.hex
       ;;
     *)
       echo "Unknown router_level. Choose 0, 1 or 2."
