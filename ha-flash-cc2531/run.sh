@@ -12,8 +12,8 @@ echo "Start flashing tool for cc2531.."
 cd /flash_cc2531
 ChipID="$(./cc_chipid $FLAGS)"
 echo $ChipID
-
-if ! $ChipID | grep "ID = b524"; then echo "[ERROR] ChipID mismatch. Check the gpio wiring or flag options." && exit 1; fi
+grepID=$(echo $ChipID | grep "ID = b524")
+if [ -z ""$grepID" ]; then echo "[ERROR] ChipID mismatch. Check the gpio wiring or flag options." && exit 1; fi
 
 if [ "$IS_COORDINATOR" == "true" ]; then
   if [ "$IS_ZIGBEE3" == "true" ]; then
