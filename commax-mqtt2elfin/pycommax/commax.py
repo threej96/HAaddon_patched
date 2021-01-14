@@ -2,6 +2,7 @@ import paho.mqtt.client as mqtt
 import json
 import time
 import asyncio
+from selenium import webdriver
 
 share_dir = '/share'
 config_dir = '/data'
@@ -81,7 +82,7 @@ def find_device(config):
 
     mqtt_client.loop_stop()
 
-    log('We found the following datas..')
+    log('다음의 데이터를 찾았습니다...')
     log('======================================')
 
     for name in collect_data:
@@ -91,10 +92,10 @@ def find_device(config):
         log('Packets: {}'.format(collect_data[name]))
         log('-------------------')
     log('======================================')
-    log('We only change the number of devices. You must manually change the state packets..')
+    log('기기의 숫자만 변경하였습니다. 상태 패킷은 직접 수정하여야 합니다.'
     with open(share_dir + '/commax_found_device.json', 'w', encoding='utf-8') as make_file:
         json.dump(dev_info, make_file, indent="\t")
-        log('Writing device_list to : /share/commax_found_device.json')
+        log('기기리스트 저장 중 : /share/commax_found_device.json')
     return dev_info
 
 
@@ -170,7 +171,7 @@ def do_work(config, device_list):
 
     prefix_list = {}
     log('----------------------')
-    log('Registered DEVICE_LISTS..')
+    log('등록된 기기 목록 DEVICE_LISTS..')
     log('----------------------')
     for name in DEVICE_LISTS:
         state = DEVICE_LISTS[name][1].get('stateON')
@@ -184,7 +185,7 @@ def do_work(config, device_list):
     QUEUE = []
     COLLECTDATA = {'cond': find_signal, 'data': set(), 'EVtime': time.time(), 'LastRecv': time.time_ns()}
     if find_signal:
-        log('[LOG] Collect 50 signals..')
+        log('[LOG] 50개의 신호를 수집 중..')
 
     async def recv_from_HA(topics, value):
         device = topics[1][:-1]
@@ -310,8 +311,8 @@ def do_work(config, device_list):
                 elif data == DEVICE_LISTS['Fan'][1]['stateOFF']:
                     await update_state('Fan', 0, 'OFF')
                 else:
-                    log("[WARNING] We found <{}>'s signal: {}".format(device_name, data))
-                    log('[WARNING] But there is no packet in DEVICE_LIST. Check your JSON file.')
+                    log("[WARNING] <{}> 기기의 신호를 찾음: {}".format(device_name, data))
+                    log('[WARNING] 기기목록에 등록되지 않는 패킷입니다. JSON 파일을 확인하세요..')
             elif device_name == 'Outlet':
                 staNUM = device_list['Outlet']['stateNUM']
                 index = int(data[staNUM - 1]) - 1
@@ -337,8 +338,8 @@ def do_work(config, device_list):
                     onoff, index = ['OFF', index] if index < num else ['ON', index - num]
                     await update_state(device_name, index, onoff)
                 else:
-                    log("[WARNING] We found <{}>'s signal: {}".format(device_name, data))
-                    log('[WARNING] But there is no packet in DEVICE_LIST. Check your JSON file.')
+                    log("[WARNING] <{}> 기기의 신호를 찾음: {}".format(device_name, data))
+                    log('[WARNING] 기기목록에 등록되지 않는 패킷입니다. JSON 파일을 확인하세요..')
 
     async def update_state(device, idx, onoff):
         state = 'power'
@@ -423,7 +424,7 @@ def do_work(config, device_list):
 
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
-            log("Connected to MQTT broker..")
+            log("MQTT 접속 중..")
             client.subscribe([(HA_TOPIC + '/#', 0), (ELFIN_TOPIC + '/recv', 0), (ELFIN_TOPIC + '/send', 1)])
             if 'EV' in DEVICE_LISTS:
                 asyncio.run(update_state('EV', 0, 'OFF'))
@@ -457,13 +458,36 @@ def do_work(config, device_list):
         while True:
             try:
                 if time.time_ns() - COLLECTDATA['LastRecv'] > 10000000000:  # 10s
-                    log('[WARNING] There is no signal from elfin! Check the devices.')
+                    log('[WARNING] 10초간 신호를 받지 못했습니다. ew11 기기를 재시작합니다.')
+                    try:
+                        elfin_id = config['elfin_id']
+                        elfin_password = config['elfin_password']
+                        elfin_server = config['elfin_server']
+
+                        url = 'http://{}:{}@{}/others.html'.format(elfin_id, elfin_password, elfin_server)
+
+                        options = webdriver.ChromeOptions()
+                        options.add_argument('--no-sandbox')
+                        options.add_argument('--headless')
+                        options.add_argument('--disable-gpu')
+                        driver = webdriver.Chrome(options=options)
+                        driver.get(url=url)
+                        button = driver.find_element_by_xpath('//*[@id="restart"]')
+                        button.click()
+
+                        alert = driver.switch_to.alert
+                        print(alert.text)
+                        alert.accept()
+
+                        await asyncio.sleep(10)
+                    except:
+                        log('[WARNING] 기기 재시작 오류! 기기 상태를 확인하세요.')
                     COLLECTDATA['LastRecv'] = time.time_ns()
                 elif time.time_ns() - COLLECTDATA['LastRecv'] > 100000000:
                     if QUEUE:
                         send_data = QUEUE.pop(0)
                         if elfin_log:
-                            log('[SIGNAL] Send a signal: {}'.format(send_data))
+                            log('[SIGNAL] 신호 전송: {}'.format(send_data))
                         mqtt_client.publish(ELFIN_SEND_TOPIC, bytes.fromhex(send_data['sendcmd']))
                         # await asyncio.sleep(0.01)
                         if send_data['count'] < 5:
@@ -488,10 +512,10 @@ if __name__ == '__main__':
         CONFIG = json.load(file)
     try:
         with open(share_dir + '/commax_found_device.json') as file:
-            log('Found device data: /share/commax_found_device.json')
+            log('기기 정보 파일을 찾음: /share/commax_found_device.json')
             OPTION = json.load(file)
     except IOError:
-        log('Could not find saved data: /share/commax_found_device.json')
+        log('기기 정보 파일이 없습니다.: /share/commax_found_device.json')
         OPTION = find_device(CONFIG)
     while True:
         do_work(CONFIG, OPTION)
