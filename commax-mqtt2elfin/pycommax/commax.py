@@ -92,7 +92,7 @@ def find_device(config):
         log('Packets: {}'.format(collect_data[name]))
         log('-------------------')
     log('======================================')
-    log('기기의 숫자만 변경하였습니다. 상태 패킷은 직접 수정하여야 합니다.'
+    log('기기의 숫자만 변경하였습니다. 상태 패킷은 직접 수정하여야 합니다.')
     with open(share_dir + '/commax_found_device.json', 'w', encoding='utf-8') as make_file:
         json.dump(dev_info, make_file, indent="\t")
         log('기기리스트 저장 중 : /share/commax_found_device.json')
