@@ -3,8 +3,6 @@ FROM python:3.8-slim-buster
 ENV LANG C.UTF-8
 ENV TZ=Asia/Seoul
 
-# upgrade pip
-#RUN pip3 install --upgrade pip
 # Install requirements for add-on
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir paho-mqtt telnetlib
