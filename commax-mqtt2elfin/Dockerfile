@@ -1,4 +1,4 @@
-FROM python:3.8-alpine3.10
+FROM python:3.8-slim-buster
   
 ENV LANG C.UTF-8
 ENV TZ=Asia/Seoul
@@ -8,9 +8,9 @@ RUN echo "http://dl-4.alpinelinux.org/alpine/v3.10/main" >> /etc/apk/repositorie
     echo "http://dl-4.alpinelinux.org/alpine/v3.10/community" >> /etc/apk/repositories
 
 # upgrade pip
-RUN pip install --upgrade pip
+RUN pip3 install --upgrade pip
 # Install requirements for add-on
-RUN pip install paho-mqtt telnetlib
+RUN pip3 install paho-mqtt telnetlib
 
 # Copy data for add-on
 COPY run.sh /
