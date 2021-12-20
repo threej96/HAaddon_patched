@@ -6,7 +6,8 @@ ENV TZ=Asia/Seoul
 # upgrade pip
 #RUN pip3 install --upgrade pip
 # Install requirements for add-on
-RUN pip3 install paho-mqtt telnetlib
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir paho-mqtt telnetlib
 
 # Copy data for add-on
 COPY run.sh /
