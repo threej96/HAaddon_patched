@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt
 import json
 import time
 import asyncio
-from selenium import webdriver
+import telnetlib
 
 share_dir = '/share'
 config_dir = '/data'
@@ -464,20 +464,13 @@ def do_work(config, device_list):
                         elfin_password = config['elfin_password']
                         elfin_server = config['elfin_server']
 
-                        url = 'http://{}:{}@{}/others.html'.format(elfin_id, elfin_password, elfin_server)
+                        ew11 = telnetlib.Telnet(elfin_server)
 
-                        options = webdriver.ChromeOptions()
-                        options.add_argument('--no-sandbox')
-                        options.add_argument('--headless')
-                        options.add_argument('--disable-gpu')
-                        driver = webdriver.Chrome(options=options)
-                        driver.get(url=url)
-                        button = driver.find_element_by_xpath('//*[@id="restart"]')
-                        button.click()
-
-                        alert = driver.switch_to.alert
-                        print(alert.text)
-                        alert.accept()
+                        ew11.read_until(b"login:")
+                        ew11.write(elfin_id.encode('utf-8') + b'\n')
+                        ew11.read_until(b"password:")
+                        ew11.write(elfin_password.encode('utf-8') + b'\n')
+                        ew11.write('Restart'.encode('utf-8') + b'\n')
 
                         await asyncio.sleep(10)
                     except:
