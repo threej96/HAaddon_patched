@@ -4,6 +4,7 @@ v 1.2.1
 -------
 1. selenium 패키지 삭제하고 telnet 으로 변경 (elfin ew11 설정에서 telnet을 켜두어야 함)
 2. apline에서 buster로 이미지 변경
+
 v 1.2.0
 -------
 1. elfin ew11 장치가 응답이 없을 시 ew11 기기를 재시작 합니다. ew11 기기의 ip, 아이디와 패스워드가 필요합니다.
