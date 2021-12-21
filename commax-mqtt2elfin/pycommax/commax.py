@@ -15,7 +15,7 @@ ELFIN_SEND_TOPIC = ELFIN_TOPIC + '/send'
 
 
 def log(string):
-    date = time.strftime('%Y-%m-%d %p %I:%M:%S', time.localtime(time.time()+9*60*60))
+    date = time.strftime('%Y-%m-%d %p %I:%M:%S', time.localtime(time.time()))
     print('[{}] {}'.format(date, string))
     return
 
