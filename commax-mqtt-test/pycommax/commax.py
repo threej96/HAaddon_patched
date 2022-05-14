@@ -7,7 +7,7 @@ import re
 
 share_dir = '/share'
 config_dir = '/data'
-data_dir = '/pypycommax'
+data_dir = '/pycommax'
 
 HA_TOPIC = 'commax'
 STATE_TOPIC = HA_TOPIC + '/{}/{}/state'
